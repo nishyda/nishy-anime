@@ -34,9 +34,11 @@ def animeOpen():
         reader = csv.DictReader(csvfile, delimiter=';')
         for item in reader:
             animelist.append(dict(item))
+    animelist.sort(key=lambda i: i['Title'].lower())
+    if data['sort']:
+        animelist.sort(key=lambda i: 0 if i['Status']=="Watching" else 1 if i['Status']=="" else 2)
 
 def animeSave():
-    animelist.sort(key=lambda i: i['Title'].lower())
     with open('anime.csv', 'w') as csvfile:
         writer = csv.DictWriter(csvfile, header, delimiter=';')
         writer.writeheader()
@@ -109,18 +111,19 @@ class EditDialog(QDialog):
         animeform.addRow("Anime title: ", self.title)
         animeform.addRow("Link to website: ", self.link)
         
-        self.newStatus = ""
-
         self.rbn1 = QRadioButton("Plan to watch")
         self.rbn2 = QRadioButton("Watching")
         self.rbn3 = QRadioButton("Watched")
 
         if animelist[form.animelist.currentRow()]['Status'] == "":
             self.rbn1.setChecked(True)
+            self.newStatus = ""
         elif animelist[form.animelist.currentRow()]['Status'] == "Watching":
             self.rbn2.setChecked(True)
+            self.newStatus = "Watching"
         elif animelist[form.animelist.currentRow()]['Status'] == "Watched":
             self.rbn3.setChecked(True)
+            self.newStatus = "Watched"
 
         self.rbn1.toggled.connect(self.toggle1)
         self.rbn2.toggled.connect(self.toggle2)
@@ -167,6 +170,10 @@ class Form(QDialog):
                 newItem.setBackground(watchedcolor[0])
                 newItem.setForeground(watchedcolor[1])
             self.animelist.insertItem(index, newItem)
+
+        self.count = QLabel(self)
+        self.count.setText("none / " + str(self.animelist.count()))
+        
         self.add = QPushButton("Add entry")
         self.remove = QPushButton("Remove entry")
         self.edit = QPushButton("Edit entry")
@@ -177,6 +184,7 @@ class Form(QDialog):
         self.play.setEnabled(False)
 
         buttonBar = QHBoxLayout()
+        buttonBar.addWidget(self.count)
         buttonBar.addWidget(self.add)
         buttonBar.addWidget(self.remove)
         buttonBar.addWidget(self.edit)
@@ -193,15 +201,17 @@ class Form(QDialog):
         self.setFixedHeight(data['windowY'])
 
         self.animelist.clicked.connect(self.updatebutton)
+        self.animelist.itemDoubleClicked.connect(self.playAnime)
         self.add.clicked.connect(self.addAnime)
         self.remove.clicked.connect(self.removeAnime)
         self.edit.clicked.connect(self.editAnime)
         self.play.clicked.connect(self.playAnime)
-    
+        
     def updatebutton(self):
         self.remove.setEnabled(True)
         self.edit.setEnabled(True)
         self.play.setEnabled(True)
+        self.count.setText(str(self.animelist.currentRow() + 1) + " / " + str(self.animelist.count()))
 
     def addAnime(self):
         addDlg = AddDialog()
@@ -235,6 +245,7 @@ class Form(QDialog):
             self.remove.setEnabled(False)
             self.edit.setEnabled(False)
             self.play.setEnabled(False)
+            self.count.setText("none / " + str(self.animelist.count()))
 
     def editAnime(self):
         editDlg = EditDialog()
