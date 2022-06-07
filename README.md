@@ -10,7 +10,8 @@ Python-based, customizable list to keep track of your shows, and link them to yo
   - 2 : Blue
   - 3 : Orange
   - 0 : Custom
-- Option to sort by status in the json
+- Option to sort by status in the json.
+- Episode and season counter
 
 ## Install
 Just download the latest build in the releases, depending on your OS. The app will initialize with default settings when first ran.
@@ -23,6 +24,8 @@ Requirements:
 ```
 sudo apt install python3 python3-pip
 ```
+(The app has been built with python 3.9, however it should work with slightly older versions.)
+
 As well as the python modules:
 ```
 pip install pyside6 cx_freeze
