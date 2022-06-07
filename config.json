@@ -1,0 +1,13 @@
+{
+    "windowtitle": "NishyAnime v2.2",
+    "windowX": 600,
+    "windowY": 400,
+    "sort": true,
+    "theme": 0,
+    "plantowatchbg": [255, 255, 153],
+    "plantowatchfg": [0,0,0],
+    "watchingbg": [204, 153, 0],
+    "watchingfg": [255,255,255],
+    "watchedbg": [255,255,255],
+    "watchedfg": [0,0,0]
+}

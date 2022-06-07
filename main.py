@@ -1,3 +1,4 @@
+from pathlib import Path
 import sys
 import webbrowser
 import json
@@ -27,9 +28,10 @@ else:
     watchedcolor = [QtGui.QColor(255, 255, 255), QtGui.QColor(0, 0, 0)]
 
 animelist = []
-header = ['Title','Link','Status']
+header = ['Title','Link','Status','Episode','TotalEp','Season','TotalSe']
 
 def animeOpen():
+    Path('anime.csv').touch(exist_ok=True)
     with open('anime.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=';')
         for item in reader:
@@ -61,6 +63,22 @@ class AddDialog(QDialog):
 
         self.newStatus = ""
 
+        currentform = QFormLayout()
+        self.currentep = QLineEdit()
+        self.currentse = QLineEdit()
+        currentform.addRow("Episode: ", self.currentep)
+        currentform.addRow("Season: ", self.currentse)
+
+        totalform = QFormLayout()
+        self.totalep = QLineEdit()
+        self.totalse = QLineEdit()
+        totalform.addRow("Total: ", self.totalep)
+        totalform.addRow("Total: ", self.totalse)
+
+        counter = QHBoxLayout()
+        counter.addLayout(currentform)
+        counter.addLayout(totalform)
+
         self.rbn1 = QRadioButton("Plan to watch")
         self.rbn2 = QRadioButton("Watching")
         self.rbn3 = QRadioButton("Watched")
@@ -79,6 +97,7 @@ class AddDialog(QDialog):
         layout = QVBoxLayout()
 
         layout.addLayout(animeform)
+        layout.addLayout(counter)
         layout.addLayout(btns)
         layout.addWidget(self.buttonBox)
 
@@ -111,6 +130,26 @@ class EditDialog(QDialog):
         animeform.addRow("Anime title: ", self.title)
         animeform.addRow("Link to website: ", self.link)
         
+        currentform = QFormLayout()
+        self.currentep = QLineEdit()
+        self.currentse = QLineEdit()
+        self.currentep.setText(animelist[form.animelist.currentRow()]['Episode'])
+        self.currentse.setText(animelist[form.animelist.currentRow()]['Season'])
+        currentform.addRow("Episode: ", self.currentep)
+        currentform.addRow("Season: ", self.currentse)
+
+        totalform = QFormLayout()
+        self.totalep = QLineEdit()
+        self.totalse = QLineEdit()
+        self.totalep.setText(animelist[form.animelist.currentRow()]['TotalEp'])
+        self.totalse.setText(animelist[form.animelist.currentRow()]['TotalSe'])
+        totalform.addRow("Total: ", self.totalep)
+        totalform.addRow("Total: ", self.totalse)
+
+        counter = QHBoxLayout()
+        counter.addLayout(currentform)
+        counter.addLayout(totalform)
+
         self.rbn1 = QRadioButton("Plan to watch")
         self.rbn2 = QRadioButton("Watching")
         self.rbn3 = QRadioButton("Watched")
@@ -137,6 +176,7 @@ class EditDialog(QDialog):
         layout = QVBoxLayout()
 
         layout.addLayout(animeform)
+        layout.addLayout(counter)
         layout.addLayout(btns)
         layout.addWidget(self.buttonBox)
 
@@ -172,27 +212,37 @@ class Form(QDialog):
             self.animelist.insertItem(index, newItem)
 
         self.count = QLabel(self)
-        self.count.setText("none / " + str(self.animelist.count()))
+        self.count.setText("0/" + str(self.animelist.count()))
+
+        self.status = QLabel(self)
+        self.episodes = QLabel(self)
+        self.seasons = QLabel(self)
         
-        self.add = QPushButton("Add entry")
-        self.remove = QPushButton("Remove entry")
-        self.edit = QPushButton("Edit entry")
-        self.play = QPushButton("Open website")
+        self.add = QPushButton("Add Entry")
+        self.remove = QPushButton("Remove Entry")
+        self.edit = QPushButton("Edit Entry")
+        self.play = QPushButton("Open Website")
 
         self.remove.setEnabled(False)
         self.edit.setEnabled(False)
         self.play.setEnabled(False)
 
         buttonBar = QHBoxLayout()
-        buttonBar.addWidget(self.count)
+        buttonBar.addWidget(self.title, alignment=QtCore.Qt.AlignLeft)
         buttonBar.addWidget(self.add)
         buttonBar.addWidget(self.remove)
         buttonBar.addWidget(self.edit)
         buttonBar.addWidget(self.play)
 
+        infoBar = QHBoxLayout()
+        infoBar.addWidget(self.status, alignment=QtCore.Qt.AlignLeft)
+        infoBar.addWidget(self.episodes, alignment=QtCore.Qt.AlignCenter)
+        infoBar.addWidget(self.seasons, alignment=QtCore.Qt.AlignCenter)
+        infoBar.addWidget(self.count, alignment=QtCore.Qt.AlignRight)
+
         layout = QVBoxLayout()
-        layout.addWidget(self.title)
         layout.addLayout(buttonBar)
+        layout.addLayout(infoBar)
         layout.addWidget(self.animelist)
 
         self.setLayout(layout)
@@ -211,15 +261,37 @@ class Form(QDialog):
         self.remove.setEnabled(True)
         self.edit.setEnabled(True)
         self.play.setEnabled(True)
-        self.count.setText(str(self.animelist.currentRow() + 1) + " / " + str(self.animelist.count()))
+        if animelist[self.animelist.currentRow()]['Status'] == "":
+            self.status.setText("Plan to watch")
+            self.episodes.setText("")
+            self.seasons.setText("")
+        elif animelist[self.animelist.currentRow()]['Status'] == "Watching":
+            self.status.setText("Watching")
+            if animelist[self.animelist.currentRow()]['Episode'] != "" and animelist[self.animelist.currentRow()]['TotalEp'] != "":
+                self.episodes.setText("Episode: " + str(animelist[self.animelist.currentRow()]['Episode']) + "/" + str(animelist[self.animelist.currentRow()]['TotalEp']))
+            else:
+                self.episodes.setText("")
+            if animelist[self.animelist.currentRow()]['Season'] != "" and animelist[self.animelist.currentRow()]['TotalSe'] != "":
+                self.seasons.setText("Season: " + str(animelist[self.animelist.currentRow()]['Season']) + "/" + str(animelist[self.animelist.currentRow()]['TotalSe']))
+            else:
+                self.seasons.setText("")
+        elif animelist[self.animelist.currentRow()]['Status'] == "Watched":
+            self.status.setText("Watched")
+            self.episodes.setText("")
+            self.seasons.setText("")
+        self.count.setText(str(self.animelist.currentRow() + 1) + "/" + str(self.animelist.count()))
 
     def addAnime(self):
         addDlg = AddDialog()
         if addDlg.exec():
             newTitle = addDlg.title.text()
             newLink = addDlg.link.text()
+            newEpisode = addDlg.currentep.text()
+            newTotalEp = addDlg.totalep.text()
+            newSeason = addDlg.currentse.text()
+            newTotalSe = addDlg.totalse.text()
             newStatus = addDlg.newStatus
-            newAnime = {'Title':newTitle,'Link':newLink,'Status':newStatus}
+            newAnime = {'Title':newTitle,'Link':newLink,'Status':newStatus,'Episode':newEpisode,'TotalEp':newTotalEp,'Season':newSeason,'TotalSe':newTotalSe}
             animelist.append(newAnime)
             animeSave()
 
@@ -234,6 +306,8 @@ class Form(QDialog):
                 newItem.setBackground(watchedcolor[0])
                 newItem.setForeground(watchedcolor[1])
             self.animelist.insertItem(self.animelist.count(), newItem)
+            self.animelist.setCurrentRow(self.animelist.count())
+            self.updatebutton()
 
     def removeAnime(self):
         animelist.pop(self.animelist.currentRow())
@@ -245,15 +319,22 @@ class Form(QDialog):
             self.remove.setEnabled(False)
             self.edit.setEnabled(False)
             self.play.setEnabled(False)
-            self.count.setText("none / " + str(self.animelist.count()))
+            self.status.setText("")
+            self.episodes.setText("")
+            self.seasons.setText("")
+            self.count.setText("0/" + str(self.animelist.count()))
 
     def editAnime(self):
         editDlg = EditDialog()
         if editDlg.exec():
             newTitle = editDlg.title.text()
             newLink = editDlg.link.text()
+            newEpisode = editDlg.currentep.text()
+            newTotalEp = editDlg.totalep.text()
+            newSeason = editDlg.currentse.text()
+            newTotalSe = editDlg.totalse.text()
             newStatus = editDlg.newStatus
-            newAnime = {'Title':newTitle,'Link':newLink,'Status':newStatus}
+            newAnime = {'Title':newTitle,'Link':newLink,'Status':newStatus,'Episode':newEpisode,'TotalEp':newTotalEp,'Season':newSeason,'TotalSe':newTotalSe}
             animelist[self.animelist.currentRow()] = newAnime
             animeSave()
             if newAnime['Status'] == "":
@@ -266,6 +347,7 @@ class Form(QDialog):
                 self.animelist.currentItem().setBackground(watchedcolor[0])
                 self.animelist.currentItem().setForeground(watchedcolor[1])
             self.animelist.currentItem().setText(newAnime['Title'])
+            self.updatebutton()
 
     def playAnime(self):
         webbrowser.open(animelist[self.animelist.currentRow()]['Link'])

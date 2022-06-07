@@ -1,4 +1,4 @@
-# NishyAnime 2.1
+# NishyAnime 2.2
 
 Python-based, customizable list to keep track of your shows, and link them to your favorite websites to watch them.
 
