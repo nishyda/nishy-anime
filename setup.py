@@ -12,5 +12,5 @@ setup(
     name="NishyAnime",
     version="2.3",
     description="NishyAnime - Interactive anime list for use with streaming websites",
-    executables=[Executable("main.py", target_name="NishyAnime")],
+    executables=[Executable("main.py", target_name="NishyAnime", base="Win32GUI") if sys.platform == "win32" or sys.platform == "cygwin" else Executable("main.py", target_name="NishyAnime")],
     )
