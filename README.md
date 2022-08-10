@@ -1,4 +1,4 @@
-# NishyAnime 2.2
+# NishyAnime 2.3
 
 Python-based, customizable list to keep track of your shows, and link them to your favorite websites to watch them.
 
@@ -13,7 +13,7 @@ Python-based, customizable list to keep track of your shows, and link them to yo
 - Option to sort by status in the json.
 - Episode and season counter
 
-## Install
+## Basic install
 Just download the latest build in the releases, depending on your OS. The app will initialize with default settings when first ran.
 
 ## Build

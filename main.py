@@ -7,8 +7,6 @@ from PySide6.QtWidgets import (QComboBox, QRadioButton, QListWidgetItem, QFormLa
 from PySide6 import QtCore
 from PySide6 import QtGui
 
-
-
 class AddDialog(QDialog):
     def __init__(self):
         super().__init__()
