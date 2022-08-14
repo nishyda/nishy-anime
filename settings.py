@@ -26,9 +26,9 @@ class SettingsDialog(QDialog):
 
         self.themeSelect = QComboBox()
         self.themeSelect.addItem("Custom (To be implemented soon)")
-        self.themeSelect.addItem("Ikea Bag Blue (Default)")
+        self.themeSelect.addItem("Thanos Bean Purple (Default)")
+        self.themeSelect.addItem("Ikea Bag Blue")
         self.themeSelect.addItem("Pumpkin Hill Orange")
-        self.themeSelect.addItem("Thanos Bean Purple")
         self.themeSelect.setCurrentIndex(data['theme'])
 
         self.color1 = QColorDialog()
