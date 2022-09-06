@@ -40,4 +40,4 @@ python3 setup.py build
 ```
 
 ## Roadmap
-Next feature to implement will be a simple UI to edit the settings instead of having to edit the json itself, possibly with a color picker for the themes, and options to export the anime list.
+Settings app has now been added, however it lacks a color picker for the themes, and options to export the anime list. These are the goals for the next update.
