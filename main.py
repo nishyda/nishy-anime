@@ -11,7 +11,6 @@ class AddDialog(QDialog):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Add new anime")
-
         self.newStatus = ""
         
         QBtn = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
@@ -184,6 +183,7 @@ class Form(QDialog):
             self.animelist.insertItem(index, newItem)
         self.animelist.clicked.connect(self.updatebutton)
         self.animelist.itemDoubleClicked.connect(self.playAnime)
+        self.animelist.setStyleSheet("border-image: url(wp.jpg);")
 
         self.count = QLabel(self)
         self.count.setText("0/" + str(self.animelist.count()))
@@ -337,6 +337,10 @@ elif data['theme'] == 3:
     plantowatchcolor = [QtGui.QColor(255, 153, 102), QtGui.QColor(0, 0, 0)]
     watchingcolor = [QtGui.QColor(102, 0, 0), QtGui.QColor(255,255,255)]
     watchedcolor = [QtGui.QColor(255, 255, 255), QtGui.QColor(0, 0, 0)]
+elif data['theme'] == 4:
+    plantowatchcolor = [QtGui.QColor(255, 153, 102, 150), QtGui.QColor(0, 0, 0)]
+    watchingcolor = [QtGui.QColor(102, 0, 0, 150), QtGui.QColor(255,255,255)]
+    watchedcolor = [QtGui.QColor(255, 255, 255, 150), QtGui.QColor(0, 0, 0)]
 else:
     plantowatchcolor = [QtGui.QColor(204, 153, 255), QtGui.QColor(0, 0, 0)]
     watchingcolor = [QtGui.QColor(102, 0, 102), QtGui.QColor(255,255,255)]

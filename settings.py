@@ -14,8 +14,8 @@ class SettingsDialog(QDialog):
         f.close()
 
         self.setWindowTitle("NishyAnime Settings GUI")
-        self.setFixedWidth(data['windowX'])
-        self.setFixedHeight(data['windowY'])
+        self.setFixedWidth(350)
+        self.setFixedHeight(150)
 
         self.orderStatus = QCheckBox("Order by status")
         self.orderPrio = QCheckBox("Order by priority")
